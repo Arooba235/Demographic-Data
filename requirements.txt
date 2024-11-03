@@ -6,5 +6,3 @@ pandas
 numpy
 geopandas
 plotly
-pydeck
-json
