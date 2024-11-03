@@ -1,0 +1,10 @@
+folium
+streamlit-folium
+streamlit-extras
+leafmap
+pandas
+numpy
+geopandas
+plotly
+pydeck
+json
