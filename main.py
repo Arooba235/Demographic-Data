@@ -44,7 +44,7 @@ selected_category_label = st.selectbox("Choose Data Category:", category_labels.
 selected_category = category_labels[selected_category_label]
 
 # Construct the file path based on user selections
-file_path = f"Data/DM_{selected_category}_{selected_state}_{selected_unit_type}.csv"
+file_path = f"DM_{selected_category}_{selected_state}_{selected_unit_type}.csv"
 
 try:
     # Load the selected file into a DataFrame
