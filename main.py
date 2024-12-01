@@ -1,17 +1,17 @@
 import streamlit as st
+from dotenv import load_dotenv
 import pandas as pd
 import pydeck as pdk
 import pymysql
 import json
 import mysql.connector
+import os
 
-# Database connection details
-# db_config = {
-#     "host": "db4free.net",
-#     "user": "arooba235",
-#     "password": "Loh62066",
-#     "db": "demographics_dat"
-# }
+load_dotenv()
+DB_HOST = os.getenv("host")
+DB_USER = os.getenv("user")
+DB_PASSWORD = os.getenv("password")
+DB_NAME = os.getenv("db")
 
 # Data: U.S. states with their centroids (latitude and longitude)
 state_data = {
@@ -58,11 +58,12 @@ try:
     file_name = f"DM_{selected_category}_{selected_state}_{selected_unit_type}"
     # Connect to the database
     conn = mysql.connector.connect(
-        host= "db4free.net",
-        user= "arooba235",
-        password= "Loh62066",
-        db= "demographics_dat"
+        host=DB_HOST,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        db=DB_NAME,
     )
+   
     cursor = conn.cursor()
     cursor.execute(f"SELECT * FROM {file_name}")
     
