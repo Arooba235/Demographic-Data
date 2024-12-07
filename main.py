@@ -1,17 +1,7 @@
 import streamlit as st
-from dotenv import load_dotenv
 import pandas as pd
 import pydeck as pdk
-import pymysql
 import json
-import mysql.connector
-import os
-
-#load_dotenv()
-#DB_HOST = os.getenv("host")
-#DB_USER = os.getenv("user")
-#DB_PASSWORD = os.getenv("password")
-# DB_NAME = os.getenv("db")
 
 # Data: U.S. states with their centroids (latitude and longitude)
 state_data = {
@@ -59,22 +49,6 @@ else:
     selected_unit_type='NEWERunits'
 try:
     file_name = f"DM_{selected_category}_{selected_state}_{selected_unit_type}.csv"
-    # Connect to the database
-    #conn = mysql.connector.connect(
-    #    host=DB_HOST,
-    #    user=DB_USER,
-    #    password=DB_PASSWORD,
-    #    db=DB_NAME,
-    #)
-   
-    #cursor = conn.cursor()
-    #cursor.execute(f"SELECT * FROM {file_name}")
-    
-    # Load the data into a DataFrame
-    #data = cursor.fetchall()
-    #columns = [col[0] for col in cursor.description]  
-    #conn.close()
-    #data = pd.DataFrame(data, columns=columns)
     data = pd.read_csv(file_name)
     # Get unique values from the "Structure" column
     unique_structures = data["Structure"].unique()
