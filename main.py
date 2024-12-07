@@ -7,11 +7,11 @@ import json
 import mysql.connector
 import os
 
-load_dotenv()
-DB_HOST = os.getenv("host")
-DB_USER = os.getenv("user")
-DB_PASSWORD = os.getenv("password")
-DB_NAME = os.getenv("db")
+#load_dotenv()
+#DB_HOST = os.getenv("host")
+#DB_USER = os.getenv("user")
+#DB_PASSWORD = os.getenv("password")
+# DB_NAME = os.getenv("db")
 
 # Data: U.S. states with their centroids (latitude and longitude)
 state_data = {
@@ -43,7 +43,7 @@ with open("gz_2010_us_040_00_5m.json") as f:
 st.title("Select Options to Load Data")
 
 # User selects state, unit type, and data category
-selected_state = st.selectbox("Choose a State:", df_states['State'])
+selected_state = st.selectbox("Choose a State:", df_states['State']).upper()
 unit_types = ["Allunits", "Newerunits"]
 category_labels = {
     "Persons by Age": "pop",
@@ -53,25 +53,29 @@ category_labels = {
 selected_unit_type = st.selectbox("Choose Unit Type:", unit_types)
 selected_category_label = st.selectbox("Choose Data Category:", category_labels.keys())
 selected_category = category_labels[selected_category_label]
-
+if (selected_unit_type=='Allunits'):
+    selected_unit_type='ALLunits'
+else:
+    selected_unit_type='NEWERunits'
 try:
-    file_name = f"DM_{selected_category}_{selected_state}_{selected_unit_type}"
+    file_name = f"DM_{selected_category}_{selected_state}_{selected_unit_type}.csv"
     # Connect to the database
-    conn = mysql.connector.connect(
-        host=DB_HOST,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        db=DB_NAME,
-    )
+    #conn = mysql.connector.connect(
+    #    host=DB_HOST,
+    #    user=DB_USER,
+    #    password=DB_PASSWORD,
+    #    db=DB_NAME,
+    #)
    
-    cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM {file_name}")
+    #cursor = conn.cursor()
+    #cursor.execute(f"SELECT * FROM {file_name}")
     
     # Load the data into a DataFrame
-    data = cursor.fetchall()
-    columns = [col[0] for col in cursor.description]  
-    conn.close()
-    data = pd.DataFrame(data, columns=columns)
+    #data = cursor.fetchall()
+    #columns = [col[0] for col in cursor.description]  
+    #conn.close()
+    #data = pd.DataFrame(data, columns=columns)
+    data = pd.read_csv(file_name)
     # Get unique values from the "Structure" column
     unique_structures = data["Structure"].unique()
 
