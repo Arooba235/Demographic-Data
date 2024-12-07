@@ -66,6 +66,7 @@ try:
     else:
         st.write("No data available for the selected structure.")
 
+    selected_state= selected_state.title()
     # Get coordinates for the selected state
     state_row = df_states[df_states['State'] == selected_state]
     if not state_row.empty:
@@ -73,7 +74,7 @@ try:
 
         # Filter the GeoJSON data to include only the selected state
         selected_state_feature = next(
-            (feature for feature in geojson_data["features"] if feature["properties"]["NAME"] == selected_state), None
+            (feature for feature in geojson_data["features"] if feature["properties"]["NAME"]== selected_state), None
         )
         filtered_geojson_data = {
             "type": "FeatureCollection",
