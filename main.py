@@ -2,6 +2,35 @@ import streamlit as st
 import pandas as pd
 import pydeck as pdk
 import json
+st.markdown(
+    """
+    <style>
+    .main-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+    .title {
+        font-size: 30px;
+        font-weight: bold;
+        color: #4CAF50;
+        margin-bottom: 10px;
+    }
+    .instructions {
+        font-size: 16px;
+        color: #555;
+        margin-bottom: 5px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# Title and Instructions container
+with st.container():
+    st.markdown('<div class="title">Explore US Housing and Demographics Data</div>', unsafe_allow_html=True)
 
 # Data: U.S. states with their centroids (latitude and longitude)
 state_data = {
@@ -30,18 +59,20 @@ with open("gz_2010_us_040_00_5m.json") as f:
     geojson_data = json.load(f)
 
 # Streamlit app
-st.title("Select Options to Load Data")
+st.sidebar.title("Options")
 
 # User selects state, unit type, and data category
-selected_state = st.selectbox("Choose a State:", df_states['State']).upper()
+selected_state = st.sidebar.selectbox("State:", df_states['State']).upper()
 unit_types = ["Allunits", "Newerunits"]
 category_labels = {
     "Persons by Age": "pop",
     "Public School Children": "psc",
     "School Age Children": "sac"
 }
-selected_unit_type = st.selectbox("Choose Unit Type:", unit_types)
-selected_category_label = st.selectbox("Choose Data Category:", category_labels.keys())
+
+selected_unit_type = st.sidebar.selectbox("Unit Type:", unit_types)
+
+selected_category_label = st.sidebar.selectbox("Data Category:", category_labels.keys())
 selected_category = category_labels[selected_category_label]
 if (selected_unit_type=='Allunits'):
     selected_unit_type='ALLunits'
@@ -54,14 +85,13 @@ try:
     unique_structures = data["Structure"].unique()
 
     # User selects a structure to view details
-    selected_structure = st.selectbox("Choose a Structure:", unique_structures)
+    selected_structure = st.sidebar.selectbox("Structure:", unique_structures)
 
     # Filter data based on the selected structure
     filtered_data = data[data["Structure"] == selected_structure]
 
     # Display the filtered data
     if not filtered_data.empty:
-        st.write(f"Details for {selected_structure}:")
         st.dataframe(filtered_data)
     else:
         st.write("No data available for the selected structure.")
@@ -90,6 +120,7 @@ try:
 
         # Define the map
         st.pydeck_chart(pdk.Deck(
+            map_style="mapbox://styles/mapbox/light-v9",
             initial_view_state=pdk.ViewState(
                 latitude=coordinates[0],
                 longitude=coordinates[1],
@@ -117,6 +148,13 @@ try:
                 )
             ],
         ))
+        with st.expander("Glossary"):
+            st.markdown("""
+             - **ACS**: American Community Survey. The ACS is a yearly survey of population and housing in the United States that is administered by the United States Census Bureau
+            - **Bedrooms (BR) (Housing Size)**: The number of rooms that would be listed as bedrooms if the house or apartment were listed on the market for sale or rent even if these rooms are currently used for other purposes. A housing unit consisting of only one room is classified as having no bedroom (studio).
+            - **Demographic Multipliers**: In this study, encompasses residential demographic multipliers—the number and profile of occupants in housing.
+            
+            """)
 
 except Exception as e:
     st.error(f"An error occurred: {e}")
