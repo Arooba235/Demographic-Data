@@ -5,7 +5,7 @@ import json
 
 # Data: U.S. states with their centroids (latitude and longitude)
 state_data = {
-'State': ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
+    'State': ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
               'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland',
               'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey',
               'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
@@ -28,20 +28,27 @@ df_states = pd.DataFrame(state_data)
 with open("gz_2010_us_040_00_5m.json") as f:
     geojson_data = json.load(f)
 
+# Definitions for selection
+definitions = {
+    "Persons by Age": "Demographic data on the distribution of persons by age categories.",
+    "Public School Children": "Data representing children enrolled in public schools across various units.",
+    "School Age Children": "Statistics of children belonging to school-going age ranges."
+}
+
 # Streamlit app
-st.title("Select Options to Load Data")
+st.title("U.S. State Data Exploration App")
 
 # User selects state, unit type, and data category
 selected_state = st.selectbox("Choose a State:", df_states['State'])
 unit_types = ["Allunits", "Newerunits"]
-category_labels = {
-    "Persons by Age": "pop",
-    "Public School Children": "psc",
-    "School Age Children": "sac"
-}
 selected_unit_type = st.selectbox("Choose Unit Type:", unit_types)
-selected_category_label = st.selectbox("Choose Data Category:", category_labels.keys())
-selected_category = category_labels[selected_category_label]
+category_labels = list(definitions.keys())
+selected_category_label = st.selectbox("Choose Data Category:", category_labels)
+selected_category = selected_category_label.replace(" ", "_").lower()
+
+# New selection box for definitions
+selected_definition = st.selectbox("Learn About Categories:", definitions.keys())
+st.write(f"**Definition for {selected_definition}:** {definitions[selected_definition]}")
 
 # Construct the file path based on user selections
 file_path = f"DM_{selected_category}_{selected_state}_{selected_unit_type}.csv"
@@ -101,8 +108,6 @@ try:
                     'ScatterplotLayer',
                     state_data_for_map,
                     get_position='[longitude, latitude]',
-                    #get_fill_color=[0, 0, 255, 160],  # Blue fill with transparency
-                    #get_radius=50000,  # Adjust the radius as needed
                     pickable=True,
                 ),
                 # GeoJSON layer for the selected state boundary
