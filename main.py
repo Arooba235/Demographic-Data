@@ -58,6 +58,13 @@ df_states = pd.DataFrame(state_data)
 with open("gz_2010_us_040_00_5m.json") as f:
     geojson_data = json.load(f)
 
+# Definitions for selection
+definitions = {
+    "Persons by Age": "Demographic data on the distribution of persons by age categories.",
+    "Public School Children": "Data representing children enrolled in public schools across various units.",
+    "School Age Children": "Statistics of children belonging to school-going age ranges."
+}
+
 # Streamlit app
 st.sidebar.title("Options")
 
@@ -133,6 +140,7 @@ try:
                     'ScatterplotLayer',
                     state_data_for_map,
                     get_position='[longitude, latitude]',
+                    pickable=True,
                 ),
                 # GeoJSON layer for the selected state boundary
                 pdk.Layer(
